@@ -23,6 +23,23 @@ export interface SavedDay {
   totalFibre: number;
 }
 
+export interface WeekPlanDay {
+  label: string;
+  isTrainingDay: boolean;
+  meals: Record<string, MealFoodRow[]>;
+}
+
+export interface WeekPlan {
+  days: WeekPlanDay[];
+}
+
+export const WEEK_PLAN_LABELS = [
+  "Training Day 1",
+  "Training Day 2",
+  "Rest Day 1",
+  "Rest Day 2",
+];
+
 export interface AppState {
   targets: {
     bodyweightKg: number;
@@ -34,6 +51,8 @@ export interface AppState {
   currentDay: DayPlan;
   savedDays: SavedDay[];
   customFoods: FoodItem[];
+  weekPlan: WeekPlan;
+  activeWeekDay: number;
 }
 
 const STORAGE_KEY = "forged-meal-planner";
@@ -54,6 +73,16 @@ function createEmptyMeals(isTrainingDay: boolean): Record<string, MealFoodRow[]>
   return meals;
 }
 
+export function createEmptyWeekPlan(): WeekPlan {
+  return {
+    days: WEEK_PLAN_LABELS.map((label) => ({
+      label,
+      isTrainingDay: label.startsWith("Training"),
+      meals: createEmptyMeals(label.startsWith("Training")),
+    })),
+  };
+}
+
 export function getDefaultState(): AppState {
   return {
     targets: {
@@ -70,6 +99,8 @@ export function getDefaultState(): AppState {
     },
     savedDays: [],
     customFoods: [],
+    weekPlan: createEmptyWeekPlan(),
+    activeWeekDay: 0,
   };
 }
 
@@ -81,6 +112,12 @@ export function loadState(): AppState {
     const parsed = JSON.parse(raw) as AppState;
     if (!parsed.currentDay.meals || Object.keys(parsed.currentDay.meals).length === 0) {
       parsed.currentDay.meals = createEmptyMeals(parsed.currentDay.isTrainingDay);
+    }
+    if (!parsed.weekPlan) {
+      parsed.weekPlan = createEmptyWeekPlan();
+    }
+    if (parsed.activeWeekDay === undefined) {
+      parsed.activeWeekDay = 0;
     }
     return parsed;
   } catch {

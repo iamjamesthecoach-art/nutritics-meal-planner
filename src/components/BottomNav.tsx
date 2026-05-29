@@ -3,6 +3,7 @@
 const TABS = [
   { id: "targets", label: "Targets" },
   { id: "day", label: "Day" },
+  { id: "week", label: "Week" },
   { id: "foods", label: "Foods" },
   { id: "recipes", label: "Recipes" },
   { id: "me", label: "Me" },
