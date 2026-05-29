@@ -4,13 +4,13 @@ import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import InstallPrompt from "@/components/InstallPrompt";
 
 export const metadata: Metadata = {
-  title: "Forged Performance Meal Planner",
+  title: "Forged Metabolism Meal Planner",
   description: "Build your own meal plan. Track macros, hit your targets.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Forged Meals",
+    title: "Forged Metabolism",
   },
 };
 
