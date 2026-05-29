@@ -237,6 +237,22 @@ export default function DayBuilderScreen({ state, update }: Props) {
   );
 }
 
+type PickerCategory = "protein" | "carbs" | "veg" | "other" | null;
+
+const PICKER_BUTTONS: { key: PickerCategory & string; label: string; icon: string }[] = [
+  { key: "protein", label: "Protein", icon: "🥩" },
+  { key: "carbs", label: "Carbs", icon: "🍚" },
+  { key: "veg", label: "Veg", icon: "🥦" },
+  { key: "other", label: "Other", icon: "+" },
+];
+
+const CATEGORY_MAP: Record<string, string[]> = {
+  protein: ["Protein"],
+  carbs: ["Carbohydrate"],
+  veg: ["Vegetable"],
+  other: ["Fat", "Fruit", "Snack", "Free / Condiment"],
+};
+
 function MealSection({
   section,
   rows,
@@ -252,7 +268,7 @@ function MealSection({
   onUpdateGrams: (rowId: string, val: string) => void;
   onRemove: (rowId: string) => void;
 }) {
-  const [showPicker, setShowPicker] = useState(false);
+  const [activePicker, setActivePicker] = useState<PickerCategory>(null);
 
   const sectionTotals = useMemo(() => {
     let cal = 0, carbs = 0, pro = 0, fat = 0, fibre = 0;
@@ -319,22 +335,30 @@ function MealSection({
         );
       })}
 
-      {showPicker ? (
+      {activePicker ? (
         <FoodPicker
           foods={allFoods}
+          categories={CATEGORY_MAP[activePicker]}
+          pickerLabel={PICKER_BUTTONS.find((b) => b.key === activePicker)?.label || ""}
           onSelect={(foodId) => {
             onAddFood(foodId);
-            setShowPicker(false);
+            setActivePicker(null);
           }}
-          onClose={() => setShowPicker(false)}
+          onClose={() => setActivePicker(null)}
         />
       ) : (
-        <button
-          onClick={() => setShowPicker(true)}
-          className="w-full py-2.5 border-2 border-dashed border-[#3a3a5c] rounded-lg text-sm text-[#6a6a8a] font-medium hover:border-[#7C4DFF] hover:text-[#7C4DFF] transition-colors"
-        >
-          + Add food
-        </button>
+        <div className="grid grid-cols-4 gap-2">
+          {PICKER_BUTTONS.map((btn) => (
+            <button
+              key={btn.key}
+              onClick={() => setActivePicker(btn.key as PickerCategory)}
+              className="py-2.5 border-2 border-dashed border-[#3a3a5c] rounded-lg text-xs text-[#6a6a8a] font-medium hover:border-[#7C4DFF] hover:text-[#7C4DFF] transition-colors flex flex-col items-center gap-0.5"
+            >
+              <span className="text-base">{btn.icon}</span>
+              <span>{btn.label}</span>
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -342,39 +366,49 @@ function MealSection({
 
 function FoodPicker({
   foods,
+  categories,
+  pickerLabel,
   onSelect,
   onClose,
 }: {
   foods: FoodItem[];
+  categories: string[];
+  pickerLabel: string;
   onSelect: (foodId: string) => void;
   onClose: () => void;
 }) {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return foods;
+    const categoryFiltered = foods.filter((f) => categories.includes(f.category));
+    if (!search.trim()) return categoryFiltered;
     const q = search.toLowerCase();
-    return foods.filter(
+    return categoryFiltered.filter(
       (f) =>
         f.food.toLowerCase().includes(q) ||
         f.category.toLowerCase().includes(q)
     );
-  }, [search, foods]);
+  }, [search, foods, categories]);
 
   return (
     <div className="border border-[#3a3a5c] rounded-lg bg-[#1a1a2e] shadow-lg shadow-purple-900/20">
-      <div className="flex items-center p-2 border-b border-[#2a2a4a]">
+      <div className="flex items-center justify-between px-3 pt-2 pb-1">
+        <span className="text-xs font-bold text-[#A78BFA] uppercase tracking-wide">
+          {pickerLabel}
+        </span>
+        <button onClick={onClose} className="text-[#6a6a8a] text-xs font-medium">
+          Cancel
+        </button>
+      </div>
+      <div className="flex items-center px-2 pb-2 border-b border-[#2a2a4a]">
         <input
           type="text"
           autoFocus
-          placeholder="Search foods..."
+          placeholder={`Search ${pickerLabel.toLowerCase()}...`}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 px-2 py-1.5 text-sm text-white bg-transparent focus:outline-none placeholder-[#6a6a8a]"
         />
-        <button onClick={onClose} className="text-[#6a6a8a] px-2 text-sm">
-          Cancel
-        </button>
       </div>
       <div className="max-h-60 overflow-y-auto">
         {filtered.map((food) => (
@@ -383,7 +417,9 @@ function FoodPicker({
             onClick={() => onSelect(food.id)}
             className="w-full text-left px-3 py-2.5 border-b border-[#2a2a4a] hover:bg-[#252547] active:bg-[#2a2a4a]"
           >
-            <span className="text-xs text-[#7C4DFF] font-medium">{food.category}</span>
+            {categories.length > 1 && (
+              <span className="text-xs text-[#7C4DFF] font-medium">{food.category}</span>
+            )}
             <div className="text-sm text-white">{food.food}</div>
             <div className="text-xs text-[#6a6a8a]">
               {food.typicalPortion} ({food.typicalG}g) | {food.calPer100g} kcal/100g
