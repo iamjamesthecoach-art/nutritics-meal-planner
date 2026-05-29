@@ -107,99 +107,99 @@ export default function MeScreen({ state, update }: Props) {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto">
-      <h1 className="text-xl font-bold text-[#1F2A33] mb-6">Me</h1>
+      <h1 className="text-xl font-bold text-white mb-6">Me</h1>
 
-      <div className="bg-gray-50 rounded-xl p-4 mb-4">
-        <h2 className="text-sm font-bold text-[#1F2A33] uppercase tracking-wide mb-3">
+      <div className="bg-[#1a1a2e] rounded-xl p-4 mb-4 border border-[#2a2a4a]">
+        <h2 className="text-sm font-bold text-[#9090b0] uppercase tracking-wide mb-3">
           Current Preset
         </h2>
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-[#1F7A8C]">
+          <span className="text-lg font-bold text-[#A78BFA]">
             {state.preset === "fat-loss" ? "Fat Loss" : "Muscle Gain"}
           </span>
           <button
             onClick={changePreset}
-            className="px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium text-[#1F2A33]"
+            className="px-4 py-2 bg-[#252547] rounded-lg text-sm font-medium text-[#c0c0d8]"
           >
             Switch to {state.preset === "fat-loss" ? "Muscle Gain" : "Fat Loss"}
           </button>
         </div>
       </div>
 
-      <div className="bg-gray-50 rounded-xl p-4 mb-4">
-        <h2 className="text-sm font-bold text-[#1F2A33] uppercase tracking-wide mb-3">
+      <div className="bg-[#1a1a2e] rounded-xl p-4 mb-4 border border-[#2a2a4a]">
+        <h2 className="text-sm font-bold text-[#9090b0] uppercase tracking-wide mb-3">
           Today&apos;s Plan
         </h2>
         <div className="grid grid-cols-5 text-center text-sm mb-3">
           <div>
-            <div className="font-bold text-[#1F2A33]">{currentDayTotals.calories}</div>
-            <div className="text-xs text-gray-500">kcal</div>
+            <div className="font-bold text-white">{currentDayTotals.calories}</div>
+            <div className="text-xs text-[#6a6a8a]">kcal</div>
           </div>
           <div>
-            <div className="font-bold">{currentDayTotals.protein}g</div>
-            <div className="text-xs text-gray-500">Protein</div>
+            <div className="font-bold text-white">{currentDayTotals.protein}g</div>
+            <div className="text-xs text-[#6a6a8a]">Protein</div>
           </div>
           <div>
-            <div className="font-bold">{currentDayTotals.carbs}g</div>
-            <div className="text-xs text-gray-500">Carbs</div>
+            <div className="font-bold text-white">{currentDayTotals.carbs}g</div>
+            <div className="text-xs text-[#6a6a8a]">Carbs</div>
           </div>
           <div>
-            <div className="font-bold">{currentDayTotals.fat}g</div>
-            <div className="text-xs text-gray-500">Fat</div>
+            <div className="font-bold text-white">{currentDayTotals.fat}g</div>
+            <div className="text-xs text-[#6a6a8a]">Fat</div>
           </div>
           <div>
-            <div className="font-bold">{currentDayTotals.fibre}g</div>
-            <div className="text-xs text-gray-500">Fibre</div>
+            <div className="font-bold text-white">{currentDayTotals.fibre}g</div>
+            <div className="text-xs text-[#6a6a8a]">Fibre</div>
           </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={saveCurrentDay}
-            className="flex-1 py-2.5 bg-[#1F7A8C] text-white rounded-lg text-sm font-medium"
+            className="flex-1 py-2.5 bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white rounded-lg text-sm font-medium"
           >
             Save Day
           </button>
           <button
             onClick={copyToClipboard}
-            className="flex-1 py-2.5 bg-gray-200 text-[#1F2A33] rounded-lg text-sm font-medium"
+            className="flex-1 py-2.5 bg-[#252547] text-[#c0c0d8] rounded-lg text-sm font-medium"
           >
             Copy to Clipboard
           </button>
         </div>
         <button
           onClick={() => generateDayPdf(state)}
-          className="w-full mt-2 py-2.5 bg-[#1F2A33] text-white rounded-lg text-sm font-medium"
+          className="w-full mt-2 py-2.5 bg-[#252547] border border-[#3a3a5c] text-white rounded-lg text-sm font-medium"
         >
           Download PDF
         </button>
         <button
           onClick={handleReset}
-          className="w-full mt-2 py-2 text-sm text-red-500 font-medium"
+          className="w-full mt-2 py-2 text-sm text-red-400 font-medium"
         >
           Reset Day
         </button>
       </div>
 
       {state.savedDays.length > 0 && (
-        <div className="bg-gray-50 rounded-xl p-4">
-          <h2 className="text-sm font-bold text-[#1F2A33] uppercase tracking-wide mb-3">
+        <div className="bg-[#1a1a2e] rounded-xl p-4 border border-[#2a2a4a]">
+          <h2 className="text-sm font-bold text-[#9090b0] uppercase tracking-wide mb-3">
             History
           </h2>
           <div className="space-y-2">
             {state.savedDays.map((day, i) => (
               <div
                 key={i}
-                className="bg-white rounded-lg p-3 border border-gray-200"
+                className="bg-[#252547] rounded-lg p-3 border border-[#3a3a5c]"
               >
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium text-[#1F2A33]">
+                  <span className="text-sm font-medium text-white">
                     {day.date}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-[#6a6a8a]">
                     {day.isTrainingDay ? "Training" : "Rest"}
                   </span>
                 </div>
-                <div className="grid grid-cols-5 text-xs text-center text-gray-600">
+                <div className="grid grid-cols-5 text-xs text-center text-[#9090b0]">
                   <div>{day.totalCalories} kcal</div>
                   <div>P {day.totalProtein}g</div>
                   <div>C {day.totalCarbs}g</div>

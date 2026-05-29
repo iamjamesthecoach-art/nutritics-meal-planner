@@ -4,8 +4,8 @@
   "description": "Build your own meal plan. Track macros, hit your targets.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1F7A8C",
+  "background_color": "#0D0D1A",
+  "theme_color": "#0D0D1A",
   "orientation": "portrait",
   "icons": [
     {

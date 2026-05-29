@@ -17,15 +17,15 @@ export default function Home() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="text-lg font-bold text-[#1F2A33]">Forged Metabolism</div>
-          <div className="text-sm text-gray-500 mt-1">Loading...</div>
+          <div className="text-lg font-bold text-white">Forged Metabolism</div>
+          <div className="text-sm text-[#9090b0] mt-1">Loading...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0D0D1A]">
       {activeTab === "targets" && <TargetsScreen state={state} update={update} />}
       {activeTab === "day" && <DayBuilderScreen state={state} update={update} />}
       {activeTab === "foods" && <FoodBankScreen state={state} update={update} />}

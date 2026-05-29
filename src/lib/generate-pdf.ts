@@ -19,10 +19,10 @@ export function generateDayPdf(state: AppState) {
   const margin = 15;
   let y = 20;
 
-  const teal = [31, 122, 140] as const;
-  const dark = [31, 42, 51] as const;
+  const purple = [124, 77, 255] as const;
+  const dark = [13, 13, 26] as const;
 
-  doc.setFillColor(...teal);
+  doc.setFillColor(...purple);
   doc.rect(0, 0, pageW, 36, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(20);
@@ -54,7 +54,7 @@ export function generateDayPdf(state: AppState) {
     doc.rect(margin, y - 4.5, pageW - margin * 2, 7, "F");
     doc.setFontSize(10);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(...teal);
+    doc.setTextColor(...purple);
     doc.text(section.toUpperCase(), margin + 2, y);
 
     const colX = { food: margin + 2, grams: 100, kcal: 118, carbs: 136, protein: 152, fat: 168, fibre: 180 };
@@ -111,12 +111,12 @@ export function generateDayPdf(state: AppState) {
   }
 
   y += 2;
-  doc.setDrawColor(...teal);
+  doc.setDrawColor(...purple);
   doc.setLineWidth(0.5);
   doc.line(margin, y, pageW - margin, y);
   y += 7;
 
-  doc.setFillColor(...teal);
+  doc.setFillColor(...purple);
   doc.rect(margin, y - 5, pageW - margin * 2, 8, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(9);

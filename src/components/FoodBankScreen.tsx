@@ -50,10 +50,10 @@ export default function FoodBankScreen({ state, update }: Props) {
     <div className="pb-24 max-w-lg mx-auto">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold text-[#1F2A33]">Food Bank</h1>
+          <h1 className="text-xl font-bold text-white">Food Bank</h1>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-3 py-1.5 bg-[#1F7A8C] text-white rounded-lg text-sm font-medium"
+            className="px-3 py-1.5 bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white rounded-lg text-sm font-medium"
           >
             + Custom Food
           </button>
@@ -77,7 +77,7 @@ export default function FoodBankScreen({ state, update }: Props) {
           placeholder="Search foods..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-[#1F2A33] mb-3 focus:outline-none focus:ring-2 focus:ring-[#1F7A8C]"
+          className="w-full border border-[#3a3a5c] rounded-lg px-4 py-3 text-sm text-white bg-[#1a1a2e] mb-3 focus:outline-none focus:ring-2 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]"
         />
 
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-4 px-4">
@@ -87,8 +87,8 @@ export default function FoodBankScreen({ state, update }: Props) {
               onClick={() => setCategory(cat)}
               className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium ${
                 category === cat
-                  ? "bg-[#1F7A8C] text-white"
-                  : "bg-gray-100 text-gray-600"
+                  ? "bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white"
+                  : "bg-[#252547] text-[#9090b0]"
               }`}
             >
               {cat}
@@ -96,7 +96,7 @@ export default function FoodBankScreen({ state, update }: Props) {
           ))}
         </div>
 
-        <p className="text-xs text-gray-500 mb-3">
+        <p className="text-xs text-[#6a6a8a] mb-3">
           {filtered.length} food{filtered.length !== 1 ? "s" : ""} | values per 100g
         </p>
 
@@ -104,39 +104,39 @@ export default function FoodBankScreen({ state, update }: Props) {
           {filtered.map((food) => (
             <div
               key={food.id}
-              className="bg-gray-50 rounded-lg p-3"
+              className="bg-[#1a1a2e] rounded-lg p-3 border border-[#2a2a4a]"
             >
               <div className="flex justify-between items-start mb-1">
                 <div>
-                  <span className="text-xs text-[#1F7A8C] font-medium">
+                  <span className="text-xs text-[#7C4DFF] font-medium">
                     {food.category}
                     {food.isCustom && " (custom)"}
                   </span>
-                  <div className="text-sm font-medium text-[#1F2A33]">{food.food}</div>
+                  <div className="text-sm font-medium text-white">{food.food}</div>
                 </div>
               </div>
-              <div className="text-xs text-gray-500 mb-2">
+              <div className="text-xs text-[#6a6a8a] mb-2">
                 {food.typicalPortion || "No typical portion"} ({food.typicalG}g)
               </div>
-              <div className="grid grid-cols-5 text-xs text-center text-gray-600">
+              <div className="grid grid-cols-5 text-xs text-center text-[#9090b0]">
                 <div>
-                  <span className="font-medium">{food.calPer100g}</span>
+                  <span className="font-medium text-white">{food.calPer100g}</span>
                   <br />kcal
                 </div>
                 <div>
-                  <span className="font-medium">{food.carbsPer100g}</span>g
+                  <span className="font-medium text-white">{food.carbsPer100g}</span>g
                   <br />Carbs
                 </div>
                 <div>
-                  <span className="font-medium">{food.proteinPer100g}</span>g
+                  <span className="font-medium text-white">{food.proteinPer100g}</span>g
                   <br />Protein
                 </div>
                 <div>
-                  <span className="font-medium">{food.fatPer100g}</span>g
+                  <span className="font-medium text-white">{food.fatPer100g}</span>g
                   <br />Fat
                 </div>
                 <div>
-                  <span className="font-medium">{food.fibrePer100g}</span>g
+                  <span className="font-medium text-white">{food.fibrePer100g}</span>g
                   <br />Fibre
                 </div>
               </div>
@@ -182,41 +182,41 @@ function AddCustomFoodForm({
   };
 
   return (
-    <div className="bg-gray-50 rounded-xl p-4 mb-4 border border-gray-200">
-      <h3 className="text-sm font-bold text-[#1F2A33] mb-3">Add Custom Food</h3>
+    <div className="bg-[#1a1a2e] rounded-xl p-4 mb-4 border border-[#3a3a5c]">
+      <h3 className="text-sm font-bold text-white mb-3">Add Custom Food</h3>
       <div className="space-y-2">
         <input
           type="text"
           placeholder="Food name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1F7A8C]"
+          className="w-full border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]"
         />
         <select
           value={cat}
           onChange={(e) => setCat(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm bg-white"
+          className="w-full border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547]"
         >
           {CATEGORIES.filter((c) => c !== "All").map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
         <div className="grid grid-cols-2 gap-2">
-          <input type="number" inputMode="numeric" placeholder="Typical g" value={typicalG} onChange={(e) => setTypicalG(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1F7A8C]" />
-          <input type="number" inputMode="decimal" placeholder="Cal/100g" value={cal} onChange={(e) => setCal(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1F7A8C]" />
+          <input type="number" inputMode="numeric" placeholder="Typical g" value={typicalG} onChange={(e) => setTypicalG(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Cal/100g" value={cal} onChange={(e) => setCal(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
         </div>
         <div className="grid grid-cols-4 gap-2">
-          <input type="number" inputMode="decimal" placeholder="Carbs" value={carbs} onChange={(e) => setCarbs(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1F7A8C]" />
-          <input type="number" inputMode="decimal" placeholder="Protein" value={protein} onChange={(e) => setProtein(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1F7A8C]" />
-          <input type="number" inputMode="decimal" placeholder="Fat" value={fat} onChange={(e) => setFat(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1F7A8C]" />
-          <input type="number" inputMode="decimal" placeholder="Fibre" value={fibre} onChange={(e) => setFibre(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#1F7A8C]" />
+          <input type="number" inputMode="decimal" placeholder="Carbs" value={carbs} onChange={(e) => setCarbs(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Protein" value={protein} onChange={(e) => setProtein(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Fat" value={fat} onChange={(e) => setFat(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Fibre" value={fibre} onChange={(e) => setFibre(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
         </div>
-        <p className="text-xs text-gray-500">All values per 100g</p>
+        <p className="text-xs text-[#6a6a8a]">All values per 100g</p>
         <div className="flex gap-2">
-          <button onClick={handleSubmit} className="flex-1 py-2 bg-[#1F7A8C] text-white rounded text-sm font-medium">
+          <button onClick={handleSubmit} className="flex-1 py-2 bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white rounded text-sm font-medium">
             Add Food
           </button>
-          <button onClick={onCancel} className="px-4 py-2 bg-gray-200 rounded text-sm">
+          <button onClick={onCancel} className="px-4 py-2 bg-[#252547] text-[#9090b0] rounded text-sm">
             Cancel
           </button>
         </div>

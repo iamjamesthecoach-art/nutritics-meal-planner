@@ -40,7 +40,7 @@ export default function InstallPrompt() {
   if (!deferredPrompt && !isIOS) return null;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 bg-[#1F7A8C] text-white px-4 py-3 flex items-center justify-between shadow-lg">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white px-4 py-3 flex items-center justify-between shadow-lg">
       {isIOS ? (
         <p className="text-sm flex-1">
           Tap{" "}
@@ -62,7 +62,7 @@ export default function InstallPrompt() {
       {!isIOS && (
         <button
           onClick={handleInstall}
-          className="ml-3 px-3 py-1.5 bg-white text-[#1F7A8C] rounded-lg text-sm font-bold whitespace-nowrap"
+          className="ml-3 px-3 py-1.5 bg-white text-[#6C3FC5] rounded-lg text-sm font-bold whitespace-nowrap"
         >
           Install
         </button>
