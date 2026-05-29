@@ -377,7 +377,7 @@ function FoodPicker({
         </button>
       </div>
       <div className="max-h-60 overflow-y-auto">
-        {filtered.slice(0, 50).map((food) => (
+        {filtered.map((food) => (
           <button
             key={food.id}
             onClick={() => onSelect(food.id)}
