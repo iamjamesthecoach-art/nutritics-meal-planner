@@ -36,7 +36,7 @@ export interface AppState {
   customFoods: FoodItem[];
 }
 
-const STORAGE_KEY = "nutritics-meal-planner";
+const STORAGE_KEY = "forged-meal-planner";
 
 const TRAINING_MEALS = ["Pre-Workout", "Breakfast", "Lunch", "Snack", "Dinner"];
 const REST_MEALS = ["Breakfast", "Lunch", "Snack", "Dinner"];

@@ -1,6 +1,6 @@
 {
-  "name": "Nutritics Meal Planner",
-  "short_name": "Meal Plan",
+  "name": "Forged Performance Meal Planner",
+  "short_name": "Forged Meals",
   "description": "Build your own meal plan. Track macros, hit your targets.",
   "start_url": "/",
   "display": "standalone",

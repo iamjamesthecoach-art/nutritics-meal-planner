@@ -17,7 +17,7 @@ export default function Home() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="text-lg font-bold text-[#1F2A33]">Nutritics</div>
+          <div className="text-lg font-bold text-[#1F2A33]">Forged Performance</div>
           <div className="text-sm text-gray-500 mt-1">Loading...</div>
         </div>
       </div>
