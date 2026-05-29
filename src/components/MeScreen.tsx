@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { AppState, SavedDay, resetDay, getMealSections } from "@/lib/store";
 import { calculateTargets, calculateFoodRow } from "@/lib/calculations";
 import { FOOD_BANK } from "@/data/food-bank";
+import { generateDayPdf } from "@/lib/generate-pdf";
 
 interface Props {
   state: AppState;
@@ -165,6 +166,12 @@ export default function MeScreen({ state, update }: Props) {
             Copy to Clipboard
           </button>
         </div>
+        <button
+          onClick={() => generateDayPdf(state)}
+          className="w-full mt-2 py-2.5 bg-[#1F2A33] text-white rounded-lg text-sm font-medium"
+        >
+          Download PDF
+        </button>
         <button
           onClick={handleReset}
           className="w-full mt-2 py-2 text-sm text-red-500 font-medium"
