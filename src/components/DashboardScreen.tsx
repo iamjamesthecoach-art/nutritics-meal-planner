@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { AppState, getMealSections } from "@/lib/store";
-import { calculateTargets, calculateFoodRow } from "@/lib/calculations";
+import { calculateTargets, calculateFoodRow, ACTIVITY_LEVELS, GOALS } from "@/lib/calculations";
 import { FOOD_BANK } from "@/data/food-bank";
 import { TabId } from "./BottomNav";
 
@@ -12,7 +12,6 @@ interface Props {
   onNavigate: (tab: TabId) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function DashboardScreen({ state, update, onNavigate }: Props) {
   const calc = calculateTargets(state.targets);
   const isTraining = state.currentDay.isTrainingDay;
@@ -24,6 +23,23 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
   );
 
   const dayTarget = isTraining ? calc.trainingDayKcal : calc.restDayKcal;
+
+  const setField = (field: string, value: string | number) => {
+    update((prev) => ({
+      ...prev,
+      targets: { ...prev.targets, [field]: value },
+    }));
+  };
+
+  const toggleDayType = () => {
+    update((prev) => ({
+      ...prev,
+      currentDay: {
+        ...prev.currentDay,
+        isTrainingDay: !prev.currentDay.isTrainingDay,
+      },
+    }));
+  };
 
   const sectionData = useMemo(() => {
     return sections.map((section) => {
@@ -37,14 +53,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
         const r = calculateFoodRow(food.calPer100g, food.carbsPer100g, food.proteinPer100g, food.fatPer100g, food.fibrePer100g, g);
         cal += r.calories; pro += r.proteinG; carbs += r.carbsG; fat += r.fatG;
       }
-      return {
-        section,
-        calories: Math.round(cal),
-        protein: Math.round(pro),
-        carbs: Math.round(carbs),
-        fat: Math.round(fat),
-        itemCount: rows.length,
-      };
+      return { section, calories: Math.round(cal), protein: Math.round(pro), carbs: Math.round(carbs), fat: Math.round(fat), itemCount: rows.length };
     });
   }, [meals, sections, allFoods]);
 
@@ -53,6 +62,12 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
   const totalCarbs = sectionData.reduce((a, s) => a + s.carbs, 0);
   const totalFat = sectionData.reduce((a, s) => a + s.fat, 0);
   const remaining = dayTarget - totalConsumed;
+
+  // Calorie ring
+  const progress = dayTarget > 0 ? Math.min(totalConsumed / dayTarget, 1) : 0;
+  const ringRadius = 70;
+  const ringCircumference = 2 * Math.PI * ringRadius;
+  const ringOffset = ringCircumference - progress * ringCircumference;
 
   // Weekly macro data
   const weekData = useMemo(() => {
@@ -76,209 +91,250 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
   const weekHasData = weekData.some((d) => d.carbs + d.protein + d.fat > 0);
   const maxMacro = Math.max(...weekData.map((d) => Math.max(d.carbs, d.protein, d.fat)), 1);
 
-  // Calorie ring
-  const progress = dayTarget > 0 ? Math.min(totalConsumed / dayTarget, 1) : 0;
-  const ringRadius = 70;
-  const ringCircumference = 2 * Math.PI * ringRadius;
-  const ringOffset = ringCircumference - progress * ringCircumference;
-
-  const mealIcons: Record<string, string> = {
-    "Pre-Workout": "⚡",
-    Breakfast: "🌅",
-    Lunch: "☀️",
-    Snack: "🥤",
-    Dinner: "🌙",
-  };
-
   return (
     <div className="pb-24 max-w-lg mx-auto">
-      {/* Branded Header */}
-      <div className="px-4 pt-4 pb-2 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold tracking-wide">
-            <span className="text-[#C9A84C]">FORGED</span>{" "}
-            <span className="text-white">METABOLISM</span>
-          </h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-[#8a8aa0] bg-[#1a1a2e] px-2.5 py-1 rounded-full border border-[#2a2a4a]">
-            {isTraining ? "🏋️ Training" : "😴 Rest"} Day
-          </span>
-        </div>
+      {/* Header */}
+      <div className="px-5 pt-5 pb-1">
+        <h1 className="text-[22px] font-bold tracking-wider">
+          <span className="text-[#C9A84C]">FORGED</span>
+          <span className="text-[#e0e0e8] font-light ml-2">METABOLISM</span>
+        </h1>
       </div>
 
-      {/* Today's Plan header */}
-      <div className="px-4 mb-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white italic">Today&apos;s Plan</h2>
-          <button
-            onClick={() => onNavigate("day")}
-            className="text-[#C9A84C] text-sm font-medium"
-          >
-            Edit →
-          </button>
-        </div>
-      </div>
+      {/* ── Your Setup ─────────────────────────── */}
+      <div className="px-4 pt-4">
+        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] overflow-hidden">
+          <div className="grid grid-cols-2 gap-px bg-[#1a1a30]">
+            {/* Bodyweight */}
+            <div className="bg-[#111127] p-3.5">
+              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Bodyweight</label>
+              <div className="flex items-baseline gap-1">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={state.targets.bodyweightKg || ""}
+                  onChange={(e) => setField("bodyweightKg", Number(e.target.value))}
+                  className="w-16 bg-transparent text-2xl font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="text-sm text-[#5a5a7a]">kg</span>
+              </div>
+            </div>
 
-      {/* Calorie Ring */}
-      <div className="mx-4 bg-[#111127] rounded-2xl border border-[#1e1e3a] p-6 mb-4">
-        <div className="flex items-center justify-center gap-8">
-          {/* Consumed */}
-          <div className="text-center">
-            <div className="text-2xl font-bold text-[#00C9A7]">{totalConsumed}</div>
-            <div className="text-xs text-[#6a6a8a]">Consumed</div>
+            {/* Goal */}
+            <div className="bg-[#111127] p-3.5">
+              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Goal</label>
+              <select
+                value={state.targets.goal}
+                onChange={(e) => setField("goal", e.target.value)}
+                className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none appearance-none cursor-pointer"
+              >
+                {GOALS.map((g) => (
+                  <option key={g.label} value={g.label} className="bg-[#111127] text-white">{g.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Activity */}
+            <div className="bg-[#111127] p-3.5">
+              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Activity</label>
+              <select
+                value={state.targets.activityLevel}
+                onChange={(e) => setField("activityLevel", e.target.value)}
+                className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none appearance-none cursor-pointer"
+              >
+                {ACTIVITY_LEVELS.map((a) => (
+                  <option key={a.label} value={a.label} className="bg-[#111127] text-white">{a.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Training days */}
+            <div className="bg-[#111127] p-3.5">
+              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Training Days</label>
+              <select
+                value={state.targets.trainingDaysPerWeek}
+                onChange={(e) => setField("trainingDaysPerWeek", Number(e.target.value))}
+                className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none appearance-none cursor-pointer"
+              >
+                {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+                  <option key={n} value={n} className="bg-[#111127] text-white">{n}x / week</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          {/* Ring */}
-          <div className="relative">
-            <svg width="160" height="160" viewBox="0 0 160 160">
-              {/* Background ring */}
-              <circle
-                cx="80"
-                cy="80"
-                r={ringRadius}
-                fill="none"
-                stroke="#1e1e3a"
-                strokeWidth="10"
-              />
-              {/* Progress ring */}
-              <circle
-                cx="80"
-                cy="80"
-                r={ringRadius}
-                fill="none"
-                stroke={progress >= 1 ? "#C9A84C" : "#00C9A7"}
-                strokeWidth="10"
-                strokeLinecap="round"
-                strokeDasharray={ringCircumference}
-                strokeDashoffset={ringOffset}
-                transform="rotate(-90 80 80)"
-                className="transition-all duration-700 ease-out"
-              />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-[10px] text-[#6a6a8a]">Calorie Goal:</div>
-              <div className="text-3xl font-bold text-white">{dayTarget}</div>
-              <div className="text-[10px] text-[#6a6a8a]">
-                {remaining > 0 ? "Remaining" : "Over"}
+          {/* Computed targets strip */}
+          <div className="bg-[#0d0d1e] px-4 py-3 flex items-center justify-between">
+            <div className="text-center flex-1">
+              <div className="text-lg font-bold text-[#00C9A7]">{calc.trainingDayKcal}</div>
+              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Training</div>
+            </div>
+            <div className="w-px h-8 bg-[#1a1a30]" />
+            <div className="text-center flex-1">
+              <div className="text-lg font-bold text-[#8a8aa0]">{calc.restDayKcal}</div>
+              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Rest</div>
+            </div>
+            <div className="w-px h-8 bg-[#1a1a30]" />
+            <div className="text-center flex-1">
+              <div className="text-lg font-bold text-white">{calc.proteinG}g</div>
+              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Protein</div>
+            </div>
+            <div className="w-px h-8 bg-[#1a1a30]" />
+            <div className="text-center flex-1">
+              <div className="text-lg font-bold text-white">{calc.fatG}g</div>
+              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Fat</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Today's Plan ───────────────────────── */}
+      <div className="px-4 pt-5">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-[#e0e0e8] uppercase tracking-wider">Today&apos;s Plan</h2>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleDayType}
+              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                isTraining
+                  ? "border-[#00C9A7]/40 text-[#00C9A7] bg-[#00C9A7]/5"
+                  : "border-[#5a5a7a]/40 text-[#8a8aa0] bg-[#5a5a7a]/5"
+              }`}
+            >
+              {isTraining ? "Training" : "Rest"}
+            </button>
+            <button onClick={() => onNavigate("day")} className="text-[#C9A84C] text-xs font-medium">
+              Edit
+            </button>
+          </div>
+        </div>
+
+        {/* Calorie Ring */}
+        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] p-5 mb-4">
+          <div className="flex items-center justify-center gap-6">
+            <div className="text-center min-w-[60px]">
+              <div className="text-xl font-bold text-[#00C9A7]">{totalConsumed}</div>
+              <div className="text-[10px] text-[#5a5a7a] uppercase tracking-wider">Consumed</div>
+            </div>
+
+            <div className="relative">
+              <svg width="140" height="140" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r={ringRadius} fill="none" stroke="#151530" strokeWidth="8" />
+                <circle
+                  cx="80" cy="80" r={ringRadius} fill="none"
+                  stroke={progress >= 1 ? "#C9A84C" : "#00C9A7"}
+                  strokeWidth="8" strokeLinecap="round"
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={ringOffset}
+                  transform="rotate(-90 80 80)"
+                  className="transition-all duration-700 ease-out"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-[9px] text-[#5a5a7a] uppercase tracking-wider">Goal</div>
+                <div className="text-2xl font-bold text-white leading-tight">{dayTarget}</div>
+              </div>
+            </div>
+
+            <div className="text-center min-w-[60px]">
+              <div className={`text-xl font-bold ${remaining >= 0 ? "text-white" : "text-[#C9A84C]"}`}>
+                {Math.abs(remaining)}
+              </div>
+              <div className="text-[10px] text-[#5a5a7a] uppercase tracking-wider">
+                {remaining >= 0 ? "Left" : "Over"}
               </div>
             </div>
           </div>
 
-          {/* Remaining */}
-          <div className="text-center">
-            <div className={`text-2xl font-bold ${remaining >= 0 ? "text-white" : "text-[#C9A84C]"}`}>
-              {Math.abs(remaining)}
+          <div className="grid grid-cols-3 gap-3 mt-4 pt-3 border-t border-[#1a1a30]">
+            <div className="text-center">
+              <div className="text-sm font-semibold text-[#4A90D9]">{totalCarbs}g</div>
+              <div className="text-[9px] text-[#5a5a7a] uppercase tracking-wider">Carbs</div>
             </div>
-            <div className="text-xs text-[#6a6a8a]">
-              {remaining >= 0 ? "Remaining" : "Over"}
+            <div className="text-center">
+              <div className="text-sm font-semibold text-[#00C9A7]">{totalProtein}g</div>
+              <div className="text-[9px] text-[#5a5a7a] uppercase tracking-wider">Protein</div>
             </div>
-          </div>
-        </div>
-
-        {/* Macro bar */}
-        <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-[#1e1e3a]">
-          <div className="text-center">
-            <div className="text-sm font-bold text-[#4A90D9]">{totalCarbs}g</div>
-            <div className="text-[10px] text-[#6a6a8a]">Carbs</div>
-          </div>
-          <div className="text-center">
-            <div className="text-sm font-bold text-[#00C9A7]">{totalProtein}g</div>
-            <div className="text-[10px] text-[#6a6a8a]">Protein</div>
-          </div>
-          <div className="text-center">
-            <div className="text-sm font-bold text-[#C9A84C]">{totalFat}g</div>
-            <div className="text-[10px] text-[#6a6a8a]">Fat</div>
+            <div className="text-center">
+              <div className="text-sm font-semibold text-[#C9A84C]">{totalFat}g</div>
+              <div className="text-[9px] text-[#5a5a7a] uppercase tracking-wider">Fat</div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Meal Cards Grid */}
-      <div className="px-4 grid grid-cols-2 gap-3 mb-6">
-        {sectionData.map((meal) => (
-          <button
-            key={meal.section}
-            onClick={() => onNavigate("day")}
-            className="bg-[#111127] rounded-xl border border-[#1e1e3a] p-4 text-left hover:border-[#C9A84C]/30 transition-colors"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xl">{mealIcons[meal.section] || "🍽️"}</span>
-              {meal.itemCount > 0 && (
-                <span className="w-2 h-2 rounded-full bg-[#00C9A7]" />
-              )}
-            </div>
-            <div className="text-sm font-semibold text-white">{meal.section}</div>
-            <div className="text-xs text-[#6a6a8a] mt-0.5">
-              {meal.itemCount > 0
-                ? `${meal.calories} kcal`
-                : "Tap to add"}
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Weekly View */}
+      {/* ── Meals ──────────────────────────────── */}
       <div className="px-4">
+        <div className="grid grid-cols-2 gap-2.5">
+          {sectionData.map((meal) => (
+            <button
+              key={meal.section}
+              onClick={() => onNavigate("day")}
+              className="bg-[#111127] rounded-xl border border-[#1a1a30] p-3.5 text-left hover:border-[#C9A84C]/20 transition-colors group"
+            >
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium">
+                  {meal.section}
+                </span>
+                {meal.itemCount > 0 && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A7]" />
+                )}
+              </div>
+              {meal.itemCount > 0 ? (
+                <div>
+                  <span className="text-lg font-bold text-white">{meal.calories}</span>
+                  <span className="text-xs text-[#5a5a7a] ml-1">kcal</span>
+                  <div className="text-[10px] text-[#5a5a7a] mt-0.5">
+                    P {meal.protein}g · C {meal.carbs}g · F {meal.fat}g
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs text-[#3a3a5a] group-hover:text-[#5a5a7a] transition-colors">
+                  + Add foods
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Weekly View ────────────────────────── */}
+      <div className="px-4 pt-5">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-white">Weekly View</h2>
-          <button
-            onClick={() => onNavigate("week")}
-            className="text-[#C9A84C] text-xs font-medium"
-          >
-            Plan Week →
+          <h2 className="text-sm font-semibold text-[#e0e0e8] uppercase tracking-wider">Week</h2>
+          <button onClick={() => onNavigate("week")} className="text-[#C9A84C] text-xs font-medium">
+            Plan
           </button>
         </div>
 
-        <div className="bg-[#111127] rounded-2xl border border-[#1e1e3a] p-4">
+        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] p-4">
           {weekHasData ? (
             <>
-              <div className="flex items-end justify-between gap-2 h-28 mb-3">
+              <div className="flex items-end justify-between gap-1.5 h-24 mb-2">
                 {weekData.map((day, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
-                    <div className="w-full flex flex-col items-center gap-[2px]">
-                      <div
-                        className="w-3 rounded-sm bg-[#4A90D9]"
-                        style={{ height: `${Math.max((day.carbs / maxMacro) * 80, 2)}px` }}
-                      />
-                      <div
-                        className="w-3 rounded-sm bg-[#00C9A7]"
-                        style={{ height: `${Math.max((day.protein / maxMacro) * 80, 2)}px` }}
-                      />
-                      <div
-                        className="w-3 rounded-sm bg-[#C9A84C]"
-                        style={{ height: `${Math.max((day.fat / maxMacro) * 80, 2)}px` }}
-                      />
-                    </div>
+                  <div key={i} className="flex-1 flex flex-col items-center gap-[1px]">
+                    <div className="w-2.5 rounded-sm bg-[#4A90D9]" style={{ height: `${Math.max((day.carbs / maxMacro) * 70, 2)}px` }} />
+                    <div className="w-2.5 rounded-sm bg-[#00C9A7]" style={{ height: `${Math.max((day.protein / maxMacro) * 70, 2)}px` }} />
+                    <div className="w-2.5 rounded-sm bg-[#C9A84C]" style={{ height: `${Math.max((day.fat / maxMacro) * 70, 2)}px` }} />
                   </div>
                 ))}
               </div>
               <div className="flex justify-between mb-3">
                 {weekData.map((day, i) => (
-                  <div key={i} className="flex-1 text-center text-[10px] text-[#6a6a8a]">
-                    {day.label}
-                  </div>
+                  <div key={i} className="flex-1 text-center text-[9px] text-[#5a5a7a]">{day.label}</div>
                 ))}
               </div>
-              <div className="flex justify-center gap-4 text-[10px]">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-sm bg-[#4A90D9]" /> Carbs
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-sm bg-[#00C9A7]" /> Protein
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-sm bg-[#C9A84C]" /> Fats
-                </span>
+              <div className="flex justify-center gap-4 text-[9px] text-[#5a5a7a]">
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-sm bg-[#4A90D9]" /> Carbs</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-sm bg-[#00C9A7]" /> Protein</span>
+                <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-sm bg-[#C9A84C]" /> Fat</span>
               </div>
             </>
           ) : (
-            <div className="text-center py-6">
-              <div className="text-sm text-[#6a6a8a]">No week plan yet</div>
-              <button
-                onClick={() => onNavigate("week")}
-                className="text-xs text-[#C9A84C] font-medium mt-1"
-              >
-                Start planning →
+            <div className="text-center py-5">
+              <div className="text-xs text-[#3a3a5a]">No week plan yet</div>
+              <button onClick={() => onNavigate("week")} className="text-xs text-[#C9A84C] font-medium mt-1">
+                Start planning
               </button>
             </div>
           )}
