@@ -103,7 +103,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
 
       {/* ── Your Setup ─────────────────────────── */}
       <div className="px-4 pt-4">
-        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] overflow-hidden">
+        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.03)]">
           <div className="grid grid-cols-2 gap-px bg-[#1a1a30]">
             {/* Bodyweight */}
             <div className="bg-[#111127] p-3.5">
@@ -195,10 +195,10 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
           <div className="flex items-center gap-2">
             <button
               onClick={toggleDayType}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider border transition-all duration-150 shadow-[0_2px_8px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)] hover:translate-y-[-1px] hover:shadow-[0_4px_12px_rgba(0,0,0,0.4)] active:translate-y-[1px] active:shadow-[0_1px_2px_rgba(0,0,0,0.2)] ${
                 isTraining
-                  ? "border-[#00C9A7]/40 text-[#00C9A7] bg-[#00C9A7]/5"
-                  : "border-[#5a5a7a]/40 text-[#8a8aa0] bg-[#5a5a7a]/5"
+                  ? "border-[#00C9A7]/30 text-[#00C9A7] bg-gradient-to-b from-[#0a2a25] to-[#061a18]"
+                  : "border-[#5a5a7a]/30 text-[#8a8aa0] bg-gradient-to-b from-[#1a1a30] to-[#111125]"
               }`}
             >
               {isTraining ? "Training" : "Rest"}
@@ -210,7 +210,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
         </div>
 
         {/* Calorie Ring */}
-        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] p-5 mb-4">
+        <div className="bg-gradient-to-b from-[#131330] to-[#0e0e24] rounded-2xl border border-[#1a1a30] p-5 mb-4 shadow-[0_6px_24px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)]">
           <div className="flex items-center justify-center gap-6">
             <div className="text-center min-w-[60px]">
               <div className="text-xl font-bold text-[#00C9A7]">{totalConsumed}</div>
@@ -270,7 +270,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
             <button
               key={meal.section}
               onClick={() => onNavigate("day")}
-              className="bg-[#111127] rounded-xl border border-[#1a1a30] p-3.5 text-left hover:border-[#C9A84C]/20 transition-colors group"
+              className="bg-gradient-to-b from-[#151535] to-[#0f0f28] rounded-xl border border-[#1e1e3a] border-b-[#0a0a1a] p-3.5 text-left shadow-[0_4px_12px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.07)] hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[0_1px_4px_rgba(0,0,0,0.3)] transition-all duration-150 group"
             >
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium">
@@ -307,7 +307,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
           </button>
         </div>
 
-        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] p-4">
+        <div className="bg-gradient-to-b from-[#131330] to-[#0e0e24] rounded-2xl border border-[#1a1a30] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)]">
           {weekHasData ? (
             <>
               <div className="flex items-end justify-between gap-1.5 h-24 mb-2">
