@@ -16,7 +16,7 @@ export const GOALS = [
 export const PROTEIN_G_PER_KG = 2.0;
 export const FAT_G_PER_KG = 0.5;
 export const FIBRE_G_MIN = 30;
-export const REST_DAY_CARB_FACTOR = 0.85;
+export const TRAINING_CARB_BOOST = 0.15; // training day gets 15% more carbs than rest day
 
 export interface Targets {
   bodyweightKg: number;
@@ -58,10 +58,22 @@ export function calculateTargets(targets: Targets): CalculatedTargets {
 
   const avgCarbsG = Math.max(0, (targetAvg - proteinG * 4 - fatG * 9) / 4);
 
-  const restCarbsG = avgCarbsG * REST_DAY_CARB_FACTOR;
   const trainingDays = targets.trainingDaysPerWeek;
-  const trainingCarbsG =
-    (avgCarbsG * 7 - (7 - trainingDays) * restCarbsG) / trainingDays;
+  const restDays = 7 - trainingDays;
+
+  // Training day gets TRAINING_CARB_BOOST% more carbs than rest day.
+  // Solve: T = R * (1 + boost), trainingDays*T + restDays*R = 7*avgCarbsG
+  // → R = 7*avg / (trainingDays*(1+boost) + restDays)
+  // When all 7 days are training, T = avgCarbsG (no boost needed).
+  let restCarbsG: number;
+  let trainingCarbsG: number;
+  if (restDays === 0) {
+    restCarbsG = avgCarbsG;
+    trainingCarbsG = avgCarbsG;
+  } else {
+    restCarbsG = (7 * avgCarbsG) / (trainingDays * (1 + TRAINING_CARB_BOOST) + restDays);
+    trainingCarbsG = restCarbsG * (1 + TRAINING_CARB_BOOST);
+  }
 
   const trainingDayKcal = proteinG * 4 + trainingCarbsG * 4 + fatG * 9;
   const restDayKcal = proteinG * 4 + restCarbsG * 4 + fatG * 9;
