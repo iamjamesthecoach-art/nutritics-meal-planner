@@ -53,7 +53,7 @@ export default function FoodBankScreen({ state, update }: Props) {
           <h1 className="text-xl font-bold text-white">Food Bank</h1>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-3 py-1.5 bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white rounded-lg text-sm font-medium"
+            className="px-3 py-1.5 bg-gradient-to-r from-[#C9A84C] to-[#A8893E] text-white rounded-lg text-sm font-medium"
           >
             + Custom Food
           </button>
@@ -77,7 +77,7 @@ export default function FoodBankScreen({ state, update }: Props) {
           placeholder="Search foods..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full border border-[#3a3a5c] rounded-lg px-4 py-3 text-sm text-white bg-[#1a1a2e] mb-3 focus:outline-none focus:ring-2 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]"
+          className="w-full border border-[#2a2a4a] rounded-lg px-4 py-3 text-sm text-white bg-[#111127] mb-3 focus:outline-none focus:ring-2 focus:ring-[#C9A84C] placeholder-[#6a6a8a]"
         />
 
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4 -mx-4 px-4">
@@ -87,8 +87,8 @@ export default function FoodBankScreen({ state, update }: Props) {
               onClick={() => setCategory(cat)}
               className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium ${
                 category === cat
-                  ? "bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white"
-                  : "bg-[#252547] text-[#9090b0]"
+                  ? "bg-gradient-to-r from-[#C9A84C] to-[#A8893E] text-white"
+                  : "bg-[#161633] text-[#9090b0]"
               }`}
             >
               {cat}
@@ -104,11 +104,11 @@ export default function FoodBankScreen({ state, update }: Props) {
           {filtered.map((food) => (
             <div
               key={food.id}
-              className="bg-[#1a1a2e] rounded-lg p-3 border border-[#2a2a4a]"
+              className="bg-[#111127] rounded-lg p-3 border border-[#1e1e3a]"
             >
               <div className="flex justify-between items-start mb-1">
                 <div>
-                  <span className="text-xs text-[#7C4DFF] font-medium">
+                  <span className="text-xs text-[#C9A84C] font-medium">
                     {food.category}
                     {food.isCustom && " (custom)"}
                   </span>
@@ -182,7 +182,7 @@ function AddCustomFoodForm({
   };
 
   return (
-    <div className="bg-[#1a1a2e] rounded-xl p-4 mb-4 border border-[#3a3a5c]">
+    <div className="bg-[#111127] rounded-xl p-4 mb-4 border border-[#2a2a4a]">
       <h3 className="text-sm font-bold text-white mb-3">Add Custom Food</h3>
       <div className="space-y-2">
         <input
@@ -190,33 +190,33 @@ function AddCustomFoodForm({
           placeholder="Food name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]"
+          className="w-full border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C] placeholder-[#6a6a8a]"
         />
         <select
           value={cat}
           onChange={(e) => setCat(e.target.value)}
-          className="w-full border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547]"
+          className="w-full border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633]"
         >
           {CATEGORIES.filter((c) => c !== "All").map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
         <div className="grid grid-cols-2 gap-2">
-          <input type="number" inputMode="numeric" placeholder="Typical g" value={typicalG} onChange={(e) => setTypicalG(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
-          <input type="number" inputMode="decimal" placeholder="Cal/100g" value={cal} onChange={(e) => setCal(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="numeric" placeholder="Typical g" value={typicalG} onChange={(e) => setTypicalG(e.target.value)} className="border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Cal/100g" value={cal} onChange={(e) => setCal(e.target.value)} className="border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C] placeholder-[#6a6a8a]" />
         </div>
         <div className="grid grid-cols-4 gap-2">
-          <input type="number" inputMode="decimal" placeholder="Carbs" value={carbs} onChange={(e) => setCarbs(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
-          <input type="number" inputMode="decimal" placeholder="Protein" value={protein} onChange={(e) => setProtein(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
-          <input type="number" inputMode="decimal" placeholder="Fat" value={fat} onChange={(e) => setFat(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
-          <input type="number" inputMode="decimal" placeholder="Fibre" value={fibre} onChange={(e) => setFibre(e.target.value)} className="border border-[#3a3a5c] rounded px-3 py-2 text-sm text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Carbs" value={carbs} onChange={(e) => setCarbs(e.target.value)} className="border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Protein" value={protein} onChange={(e) => setProtein(e.target.value)} className="border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Fat" value={fat} onChange={(e) => setFat(e.target.value)} className="border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C] placeholder-[#6a6a8a]" />
+          <input type="number" inputMode="decimal" placeholder="Fibre" value={fibre} onChange={(e) => setFibre(e.target.value)} className="border border-[#2a2a4a] rounded px-3 py-2 text-sm text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C] placeholder-[#6a6a8a]" />
         </div>
         <p className="text-xs text-[#6a6a8a]">All values per 100g</p>
         <div className="flex gap-2">
-          <button onClick={handleSubmit} className="flex-1 py-2 bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white rounded text-sm font-medium">
+          <button onClick={handleSubmit} className="flex-1 py-2 bg-gradient-to-r from-[#C9A84C] to-[#A8893E] text-white rounded text-sm font-medium">
             Add Food
           </button>
-          <button onClick={onCancel} className="px-4 py-2 bg-[#252547] text-[#9090b0] rounded text-sm">
+          <button onClick={onCancel} className="px-4 py-2 bg-[#161633] text-[#9090b0] rounded text-sm">
             Cancel
           </button>
         </div>

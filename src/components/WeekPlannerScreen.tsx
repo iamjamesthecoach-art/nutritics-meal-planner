@@ -118,14 +118,14 @@ export default function WeekPlannerScreen({ state, update }: Props) {
 
   return (
     <div className="pb-24 max-w-lg mx-auto">
-      <div className="sticky top-0 z-40 bg-[#0D0D1A] border-b border-[#2a2a4a]">
+      <div className="sticky top-0 z-40 bg-[#0a0a1a]/95 backdrop-blur-md border-b border-[#1e1e3a]">
         <div className="px-4 pt-3 pb-2">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-xl font-bold text-white">Week Planner</h1>
             {weekHasFood && (
               <button
                 onClick={() => generateWeekPdf(state)}
-                className="px-3 py-1.5 bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white rounded-lg text-xs font-medium"
+                className="px-3 py-1.5 bg-gradient-to-r from-[#C9A84C] to-[#A8893E] text-white rounded-lg text-xs font-medium"
               >
                 Download PDF
               </button>
@@ -140,10 +140,10 @@ export default function WeekPlannerScreen({ state, update }: Props) {
                   onClick={() => update((prev) => ({ ...prev, activeWeekDay: i }))}
                   className={`flex-1 py-2 rounded-lg text-xs font-medium text-center transition-all ${
                     activeIdx === i
-                      ? "bg-gradient-to-r from-[#7C4DFF] to-[#6C3FC5] text-white"
+                      ? "bg-gradient-to-r from-[#C9A84C] to-[#A8893E] text-white"
                       : hasFood
-                      ? "bg-[#252547] text-[#A78BFA] border border-[#7C4DFF]/30"
-                      : "bg-[#252547] text-[#9090b0]"
+                      ? "bg-[#161633] text-[#C9A84C] border border-[#C9A84C]/30"
+                      : "bg-[#161633] text-[#9090b0]"
                   }`}
                 >
                   <div>{day.isTrainingDay ? "T" : "R"}{day.isTrainingDay ? i + 1 : i - 1}</div>
@@ -170,7 +170,7 @@ export default function WeekPlannerScreen({ state, update }: Props) {
           />
         </div>
 
-        <div className="grid grid-cols-5 text-center text-xs mb-4 bg-[#1a1a2e] rounded-lg p-2 border border-[#2a2a4a]">
+        <div className="grid grid-cols-5 text-center text-xs mb-4 bg-[#111127] rounded-lg p-2 border border-[#1e1e3a]">
           <div>
             <div className="font-bold text-white">{activeDayTotals.calories}</div>
             <div className="text-[#6a6a8a]">kcal</div>
@@ -238,17 +238,17 @@ function CopyDayDropdown({
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="px-3 py-1.5 bg-[#252547] text-[#9090b0] rounded-lg text-xs font-medium border border-[#3a3a5c]"
+        className="px-3 py-1.5 bg-[#161633] text-[#9090b0] rounded-lg text-xs font-medium border border-[#2a2a4a]"
       >
         Copy from...
       </button>
       {open && (
-        <div className="absolute right-0 top-9 bg-[#1a1a2e] border border-[#3a3a5c] rounded-lg shadow-lg z-50">
+        <div className="absolute right-0 top-9 bg-[#111127] border border-[#2a2a4a] rounded-lg shadow-lg z-50">
           {otherDays.map((d) => (
             <button
               key={d.idx}
               onClick={() => { onCopy(d.idx); setOpen(false); }}
-              className="block w-full text-left px-4 py-2 text-sm text-[#c0c0d8] hover:bg-[#252547] whitespace-nowrap"
+              className="block w-full text-left px-4 py-2 text-sm text-[#c0c0d8] hover:bg-[#161633] whitespace-nowrap"
             >
               {d.label}
             </button>
@@ -308,7 +308,7 @@ function MealSection({
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-sm font-bold text-[#A78BFA] uppercase tracking-wide">{section}</h3>
+        <h3 className="text-sm font-bold text-[#C9A84C] uppercase tracking-wide">{section}</h3>
         {rows.length > 0 && (
           <span className="text-xs text-[#6a6a8a]">{sectionTotals.cal} kcal | P {sectionTotals.pro}g</span>
         )}
@@ -321,10 +321,10 @@ function MealSection({
         const validGrams = isNaN(grams) || grams <= 0 ? 0 : grams;
         const r = calculateFoodRow(food.calPer100g, food.carbsPer100g, food.proteinPer100g, food.fatPer100g, food.fibrePer100g, validGrams);
         return (
-          <div key={row.id} className="bg-[#1a1a2e] rounded-lg p-3 mb-2 border border-[#2a2a4a]">
+          <div key={row.id} className="bg-[#111127] rounded-lg p-3 mb-2 border border-[#1e1e3a]">
             <div className="flex justify-between items-start mb-2">
               <div className="flex-1 min-w-0">
-                <span className="text-xs text-[#7C4DFF] font-medium">{food.category}</span>
+                <span className="text-xs text-[#C9A84C] font-medium">{food.category}</span>
                 <div className="text-sm font-medium text-white truncate">{food.food}</div>
               </div>
               <button onClick={() => onRemove(row.id)} className="text-[#6a6a8a] text-lg ml-2 p-1">x</button>
@@ -336,7 +336,7 @@ function MealSection({
                 placeholder={`${food.typicalG}g`}
                 value={row.gramsInput}
                 onChange={(e) => onUpdateGrams(row.id, e.target.value)}
-                className="w-20 border border-[#3a3a5c] rounded px-2 py-1.5 text-sm text-center text-white bg-[#252547] focus:outline-none focus:ring-1 focus:ring-[#7C4DFF]"
+                className="w-20 border border-[#2a2a4a] rounded px-2 py-1.5 text-sm text-center text-white bg-[#161633] focus:outline-none focus:ring-1 focus:ring-[#C9A84C]"
               />
               <span className="text-xs text-[#6a6a8a]">g</span>
             </div>
@@ -365,7 +365,7 @@ function MealSection({
             <button
               key={btn.key}
               onClick={() => setActivePicker(btn.key as PickerCategory)}
-              className="py-2.5 border-2 border-dashed border-[#3a3a5c] rounded-lg text-xs text-[#6a6a8a] font-medium hover:border-[#7C4DFF] hover:text-[#7C4DFF] transition-colors flex flex-col items-center gap-0.5"
+              className="py-2.5 border-2 border-dashed border-[#2a2a4a] rounded-lg text-xs text-[#6a6a8a] font-medium hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors flex flex-col items-center gap-0.5"
             >
               <span className="text-base">{btn.icon}</span>
               <span>{btn.label}</span>
@@ -404,16 +404,16 @@ function FoodPicker({
   }, [search, foods, categories]);
 
   return (
-    <div className="border border-[#3a3a5c] rounded-lg bg-[#1a1a2e] shadow-lg shadow-purple-900/20">
+    <div className="border border-[#2a2a4a] rounded-lg bg-[#111127] shadow-lg shadow-purple-900/20">
       <div className="flex items-center justify-between px-3 pt-2 pb-1">
-        <span className="text-xs font-bold text-[#A78BFA] uppercase tracking-wide">
+        <span className="text-xs font-bold text-[#C9A84C] uppercase tracking-wide">
           {pickerLabel}
         </span>
         <button onClick={onClose} className="text-[#6a6a8a] text-xs font-medium">
           Cancel
         </button>
       </div>
-      <div className="flex items-center px-2 pb-2 border-b border-[#2a2a4a]">
+      <div className="flex items-center px-2 pb-2 border-b border-[#1e1e3a]">
         <input
           type="text"
           autoFocus
@@ -428,10 +428,10 @@ function FoodPicker({
           <button
             key={food.id}
             onClick={() => onSelect(food.id)}
-            className="w-full text-left px-3 py-2.5 border-b border-[#2a2a4a] hover:bg-[#252547] active:bg-[#2a2a4a]"
+            className="w-full text-left px-3 py-2.5 border-b border-[#1e1e3a] hover:bg-[#161633] active:bg-[#1e1e3a]"
           >
             {categories.length > 1 && (
-              <span className="text-xs text-[#7C4DFF] font-medium">{food.category}</span>
+              <span className="text-xs text-[#C9A84C] font-medium">{food.category}</span>
             )}
             <div className="text-sm text-white">{food.food}</div>
             <div className="text-xs text-[#6a6a8a]">

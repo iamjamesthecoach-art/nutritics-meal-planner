@@ -40,6 +40,14 @@ export const WEEK_PLAN_LABELS = [
   "Rest Day 2",
 ];
 
+export interface CustomRecipe {
+  id: string;
+  title: string;
+  servings: number;
+  ingredientRows: { foodId: string; grams: number }[];
+  method: string[];
+}
+
 export interface AppState {
   targets: {
     bodyweightKg: number;
@@ -51,6 +59,7 @@ export interface AppState {
   currentDay: DayPlan;
   savedDays: SavedDay[];
   customFoods: FoodItem[];
+  customRecipes: CustomRecipe[];
   weekPlan: WeekPlan;
   activeWeekDay: number;
 }
@@ -99,6 +108,7 @@ export function getDefaultState(): AppState {
     },
     savedDays: [],
     customFoods: [],
+    customRecipes: [],
     weekPlan: createEmptyWeekPlan(),
     activeWeekDay: 0,
   };
@@ -115,6 +125,9 @@ export function loadState(): AppState {
     }
     if (!parsed.weekPlan) {
       parsed.weekPlan = createEmptyWeekPlan();
+    }
+    if (!parsed.customRecipes) {
+      parsed.customRecipes = [];
     }
     if (parsed.activeWeekDay === undefined) {
       parsed.activeWeekDay = 0;
