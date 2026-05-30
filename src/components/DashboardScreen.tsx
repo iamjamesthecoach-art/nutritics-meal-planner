@@ -88,7 +88,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
       </div>
 
       {/* ── Setup ──────────────────────────────── */}
-      <div className="mx-4 rounded-2xl overflow-hidden" style={{ background: "var(--bg-raised)", border: "1px solid var(--border-subtle)" }}>
+      <div className="mx-4 rounded-2xl overflow-hidden" style={{ background: "linear-gradient(to bottom, var(--bg-raised-top), var(--bg-raised))", border: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-bottom)", boxShadow: "var(--shadow-card)" }}>
         <div className="grid grid-cols-3 divide-x" style={{ borderColor: "var(--border-subtle)" }}>
           <InputCell label="Weight" suffix="kg" type="number" value={state.targets.bodyweightKg || ""} onChange={(v) => setField("bodyweightKg", Number(v))} />
           <InputCell label="Height" suffix="cm" type="number" value={state.targets.heightCm || ""} onChange={(v) => setField("heightCm", Number(v))} />
@@ -126,8 +126,14 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
           <SectionLabel>Today</SectionLabel>
           <div className="flex items-center gap-2">
             <button onClick={toggleDayType}
-              className="text-[11px] font-semibold uppercase tracking-[0.1em] px-2.5 py-1 rounded-md transition-colors"
-              style={{ color: isTraining ? "var(--teal)" : "var(--text-secondary)", background: "var(--bg-raised)", border: "1px solid var(--border-subtle)" }}>
+              className="text-[11px] font-semibold uppercase tracking-[0.1em] px-2.5 py-1.5 rounded-lg transition-all duration-150 hover:-translate-y-px active:translate-y-px"
+              style={{
+                color: isTraining ? "var(--teal)" : "var(--text-secondary)",
+                background: "linear-gradient(to bottom, var(--bg-raised-top), var(--bg-raised))",
+                border: "1px solid var(--border-subtle)",
+                borderBottom: "1px solid var(--border-bottom)",
+                boxShadow: "0 2px 8px oklch(0 0 0 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.04)",
+              }}>
               {isTraining ? "Training" : "Rest"}
             </button>
             <button onClick={() => onNavigate("day")} className="text-[11px] font-semibold uppercase tracking-[0.1em]" style={{ color: "var(--gold)" }}>
@@ -136,7 +142,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
           </div>
         </div>
 
-        <div className="rounded-2xl p-5" style={{ background: "var(--bg-raised)", border: "1px solid var(--border-subtle)" }}>
+        <div className="rounded-2xl p-5" style={{ background: "linear-gradient(to bottom, var(--bg-raised-top), var(--bg-raised))", border: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-bottom)", boxShadow: "var(--shadow-card)" }}>
           <div className="flex items-center justify-center gap-8">
             <div className="text-center">
               <div className="text-[28px] font-extrabold tabular-nums leading-none" style={{ color: "var(--teal)" }}>{totalConsumed}</div>
@@ -197,7 +203,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
           <SectionLabel>Week</SectionLabel>
           <button onClick={() => onNavigate("week")} className="text-[11px] font-semibold uppercase tracking-[0.1em]" style={{ color: "var(--gold)" }}>Plan</button>
         </div>
-        <div className="rounded-2xl p-4" style={{ background: "var(--bg-raised)", border: "1px solid var(--border-subtle)" }}>
+        <div className="rounded-2xl p-4" style={{ background: "linear-gradient(to bottom, var(--bg-raised-top), var(--bg-raised))", border: "1px solid var(--border-subtle)", borderBottom: "1px solid var(--border-bottom)", boxShadow: "var(--shadow-card)" }}>
           {weekHasData ? (
             <>
               <div className="flex items-end justify-between gap-1 h-20 mb-2">
@@ -261,8 +267,17 @@ function InputCell({ label, suffix, type, value, onChange }: { label: string; su
 
 function MealCard({ meal, onClick }: { meal: { section: string; calories: number; protein: number; carbs: number; fat: number; itemCount: number }; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="rounded-xl p-3 text-left transition-all duration-100 active:scale-[0.97]"
-      style={{ background: "var(--bg-raised)", border: "1px solid var(--border-subtle)" }}>
+    <button onClick={onClick}
+      className="rounded-xl p-3 text-left transition-all duration-150 hover:-translate-y-0.5 active:translate-y-px"
+      style={{
+        background: "linear-gradient(to bottom, var(--bg-raised-top), var(--bg-raised))",
+        border: "1px solid var(--border-subtle)",
+        borderBottom: "1px solid var(--border-bottom)",
+        boxShadow: "var(--shadow-card)",
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-card-hover)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "var(--shadow-card)"; }}
+    >
       <div className="flex items-center justify-between mb-1">
         <span className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: "var(--text-secondary)" }}>{meal.section}</span>
         {meal.itemCount > 0 && <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--teal)" }} />}
