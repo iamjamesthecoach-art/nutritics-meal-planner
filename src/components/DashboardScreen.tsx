@@ -103,7 +103,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
 
       {/* ── Your Setup ─────────────────────────── */}
       <div className="px-4 pt-4">
-        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.03)]">
+        <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] overflow-hidden shadow-[0_4px_24px_rgba(201,168,76,0.06),0_2px_12px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)]">
           <div className="grid grid-cols-2 gap-px bg-[#1a1a30]">
             {/* Bodyweight */}
             <div className="bg-[#111127] p-3.5">
@@ -210,7 +210,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
         </div>
 
         {/* Calorie Ring */}
-        <div className="bg-gradient-to-b from-[#131330] to-[#0e0e24] rounded-2xl border border-[#1a1a30] p-5 mb-4 shadow-[0_6px_24px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <div className="bg-gradient-to-b from-[#131330] to-[#0e0e24] rounded-2xl border border-[#1a1a30] p-5 mb-4 shadow-[0_0_30px_rgba(0,201,167,0.06),0_6px_24px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)]">
           <div className="flex items-center justify-center gap-6">
             <div className="text-center min-w-[60px]">
               <div className="text-xl font-bold text-[#00C9A7]">{totalConsumed}</div>
@@ -265,37 +265,50 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
 
       {/* ── Meals ──────────────────────────────── */}
       <div className="px-4">
-        <div className="grid grid-cols-2 gap-2.5">
-          {sectionData.map((meal) => (
+        {(() => {
+          const topRow = sectionData.length > 4 ? sectionData.slice(0, 3) : sectionData.slice(0, 2);
+          const bottomRow = sectionData.length > 4 ? sectionData.slice(3) : sectionData.slice(2);
+          const MealCard = ({ meal }: { meal: typeof sectionData[0] }) => (
             <button
-              key={meal.section}
               onClick={() => onNavigate("day")}
-              className="bg-gradient-to-b from-[#151535] to-[#0f0f28] rounded-xl border border-[#1e1e3a] border-b-[#0a0a1a] p-3.5 text-left shadow-[0_4px_12px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.05)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.07)] hover:translate-y-[-1px] active:translate-y-[1px] active:shadow-[0_1px_4px_rgba(0,0,0,0.3)] transition-all duration-150 group"
+              className="bg-gradient-to-b from-[#161638] to-[#0f0f28] rounded-xl border border-[#22223e] border-b-[#0c0c20] p-3.5 text-left shadow-[0_0_20px_rgba(201,168,76,0.04),0_4px_14px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.06)] hover:shadow-[0_0_28px_rgba(201,168,76,0.08),0_8px_24px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)] hover:translate-y-[-2px] active:translate-y-[1px] active:shadow-[0_1px_4px_rgba(0,0,0,0.3)] transition-all duration-150 group"
             >
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium">
+                <span className="text-[11px] uppercase tracking-widest text-[#9090a8] font-semibold">
                   {meal.section}
                 </span>
                 {meal.itemCount > 0 && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A7]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00C9A7] shadow-[0_0_6px_rgba(0,201,167,0.5)]" />
                 )}
               </div>
               {meal.itemCount > 0 ? (
                 <div>
                   <span className="text-lg font-bold text-white">{meal.calories}</span>
-                  <span className="text-xs text-[#5a5a7a] ml-1">kcal</span>
-                  <div className="text-[10px] text-[#5a5a7a] mt-0.5">
+                  <span className="text-xs text-[#7a7a96] ml-1">kcal</span>
+                  <div className="text-[10px] text-[#7a7a96] mt-0.5">
                     P {meal.protein}g · C {meal.carbs}g · F {meal.fat}g
                   </div>
                 </div>
               ) : (
-                <div className="text-xs text-[#3a3a5a] group-hover:text-[#5a5a7a] transition-colors">
+                <div className="text-xs text-[#505068] font-medium group-hover:text-[#C9A84C] transition-colors">
                   + Add foods
                 </div>
               )}
             </button>
-          ))}
-        </div>
+          );
+          return (
+            <>
+              <div className={`grid gap-2.5 mb-2.5 ${topRow.length === 3 ? "grid-cols-3" : "grid-cols-2"}`}>
+                {topRow.map((meal) => <MealCard key={meal.section} meal={meal} />)}
+              </div>
+              {bottomRow.length > 0 && (
+                <div className={`grid gap-2.5 ${bottomRow.length === 2 ? "grid-cols-2 max-w-[66%] mx-auto" : "grid-cols-2"}`}>
+                  {bottomRow.map((meal) => <MealCard key={meal.section} meal={meal} />)}
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
 
       {/* ── Weekly View ────────────────────────── */}
@@ -307,7 +320,7 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
           </button>
         </div>
 
-        <div className="bg-gradient-to-b from-[#131330] to-[#0e0e24] rounded-2xl border border-[#1a1a30] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <div className="bg-gradient-to-b from-[#131330] to-[#0e0e24] rounded-2xl border border-[#1a1a30] p-4 shadow-[0_0_24px_rgba(74,144,217,0.05),0_4px_20px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)]">
           {weekHasData ? (
             <>
               <div className="flex items-end justify-between gap-1.5 h-24 mb-2">
