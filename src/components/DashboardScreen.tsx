@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { AppState, getMealSections } from "@/lib/store";
-import { calculateTargets, calculateFoodRow, ACTIVITY_LEVELS, GOALS } from "@/lib/calculations";
+import { calculateTargets, calculateFoodRow, GOALS } from "@/lib/calculations";
 import { FOOD_BANK } from "@/data/food-bank";
 import { TabId } from "./BottomNav";
 
@@ -104,25 +104,52 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
       {/* ── Your Setup ─────────────────────────── */}
       <div className="px-4 pt-4">
         <div className="bg-[#111127] rounded-2xl border border-[#1a1a30] overflow-hidden shadow-[0_4px_24px_rgba(201,168,76,0.06),0_2px_12px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)]">
-          <div className="grid grid-cols-2 gap-px bg-[#1a1a30]">
-            {/* Bodyweight */}
-            <div className="bg-[#111127] p-3.5">
-              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Bodyweight</label>
-              <div className="flex items-baseline gap-1">
+          {/* Top row: 3 cells */}
+          <div className="grid grid-cols-3 gap-px bg-[#1a1a30]">
+            <div className="bg-[#111127] p-3">
+              <label className="text-[9px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1">Weight</label>
+              <div className="flex items-baseline gap-0.5">
                 <input
                   type="number"
                   inputMode="decimal"
                   value={state.targets.bodyweightKg || ""}
                   onChange={(e) => setField("bodyweightKg", Number(e.target.value))}
-                  className="w-16 bg-transparent text-2xl font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-12 bg-transparent text-xl font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
-                <span className="text-sm text-[#5a5a7a]">kg</span>
+                <span className="text-[10px] text-[#5a5a7a]">kg</span>
               </div>
             </div>
-
-            {/* Goal */}
-            <div className="bg-[#111127] p-3.5">
-              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Goal</label>
+            <div className="bg-[#111127] p-3">
+              <label className="text-[9px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1">Height</label>
+              <div className="flex items-baseline gap-0.5">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={state.targets.heightCm || ""}
+                  onChange={(e) => setField("heightCm", Number(e.target.value))}
+                  className="w-12 bg-transparent text-xl font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="text-[10px] text-[#5a5a7a]">cm</span>
+              </div>
+            </div>
+            <div className="bg-[#111127] p-3">
+              <label className="text-[9px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1">Age</label>
+              <div className="flex items-baseline gap-0.5">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={state.targets.ageYears || ""}
+                  onChange={(e) => setField("ageYears", Number(e.target.value))}
+                  className="w-12 bg-transparent text-xl font-bold text-white focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="text-[10px] text-[#5a5a7a]">yrs</span>
+              </div>
+            </div>
+          </div>
+          {/* Bottom row: 2 cells */}
+          <div className="grid grid-cols-2 gap-px bg-[#1a1a30]">
+            <div className="bg-[#111127] p-3">
+              <label className="text-[9px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1">Goal</label>
               <select
                 value={state.targets.goal}
                 onChange={(e) => setField("goal", e.target.value)}
@@ -133,24 +160,8 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
                 ))}
               </select>
             </div>
-
-            {/* Activity */}
-            <div className="bg-[#111127] p-3.5">
-              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Activity</label>
-              <select
-                value={state.targets.activityLevel}
-                onChange={(e) => setField("activityLevel", e.target.value)}
-                className="w-full bg-transparent text-sm font-semibold text-white focus:outline-none appearance-none cursor-pointer"
-              >
-                {ACTIVITY_LEVELS.map((a) => (
-                  <option key={a.label} value={a.label} className="bg-[#111127] text-white">{a.label}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Training days */}
-            <div className="bg-[#111127] p-3.5">
-              <label className="text-[10px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1.5">Training Days</label>
+            <div className="bg-[#111127] p-3">
+              <label className="text-[9px] uppercase tracking-widest text-[#5a5a7a] font-medium block mb-1">Training</label>
               <select
                 value={state.targets.trainingDaysPerWeek}
                 onChange={(e) => setField("trainingDaysPerWeek", Number(e.target.value))}
@@ -164,25 +175,26 @@ export default function DashboardScreen({ state, update, onNavigate }: Props) {
           </div>
 
           {/* Computed targets strip */}
-          <div className="bg-[#0d0d1e] px-4 py-3 flex items-center justify-between">
-            <div className="text-center flex-1">
-              <div className="text-lg font-bold text-[#00C9A7]">{calc.trainingDayKcal}</div>
-              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Training</div>
+          <div className="bg-[#0d0d1e] px-3 py-3 grid grid-cols-5 gap-1">
+            <div className="text-center">
+              <div className="text-base font-bold text-[#5a5a7a]">{calc.bmr}</div>
+              <div className="text-[8px] uppercase tracking-wider text-[#3a3a5a]">BMR</div>
             </div>
-            <div className="w-px h-8 bg-[#1a1a30]" />
-            <div className="text-center flex-1">
-              <div className="text-lg font-bold text-[#8a8aa0]">{calc.restDayKcal}</div>
-              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Rest</div>
+            <div className="text-center">
+              <div className="text-base font-bold text-[#00C9A7]">{calc.trainingDayKcal}</div>
+              <div className="text-[8px] uppercase tracking-wider text-[#5a5a7a]">Training</div>
             </div>
-            <div className="w-px h-8 bg-[#1a1a30]" />
-            <div className="text-center flex-1">
-              <div className="text-lg font-bold text-white">{calc.proteinG}g</div>
-              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Protein</div>
+            <div className="text-center">
+              <div className="text-base font-bold text-[#8a8aa0]">{calc.restDayKcal}</div>
+              <div className="text-[8px] uppercase tracking-wider text-[#5a5a7a]">Rest</div>
             </div>
-            <div className="w-px h-8 bg-[#1a1a30]" />
-            <div className="text-center flex-1">
-              <div className="text-lg font-bold text-white">{calc.fatG}g</div>
-              <div className="text-[9px] uppercase tracking-wider text-[#5a5a7a]">Fat</div>
+            <div className="text-center">
+              <div className="text-base font-bold text-white">{calc.proteinG}g</div>
+              <div className="text-[8px] uppercase tracking-wider text-[#5a5a7a]">Protein</div>
+            </div>
+            <div className="text-center">
+              <div className="text-base font-bold text-white">{calc.fatG}g</div>
+              <div className="text-[8px] uppercase tracking-wider text-[#5a5a7a]">Fat</div>
             </div>
           </div>
         </div>

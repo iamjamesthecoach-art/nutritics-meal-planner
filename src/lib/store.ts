@@ -51,7 +51,9 @@ export interface CustomRecipe {
 export interface AppState {
   targets: {
     bodyweightKg: number;
-    activityLevel: string;
+    heightCm: number;
+    ageYears: number;
+    activityLevel?: string; // legacy — kept for migration
     goal: string;
     trainingDaysPerWeek: number;
   };
@@ -96,7 +98,8 @@ export function getDefaultState(): AppState {
   return {
     targets: {
       bodyweightKg: 80,
-      activityLevel: "Moderately active",
+      heightCm: 178,
+      ageYears: 35,
       goal: "Moderate cut",
       trainingDaysPerWeek: 4,
     },
@@ -128,6 +131,12 @@ export function loadState(): AppState {
     }
     if (!parsed.customRecipes) {
       parsed.customRecipes = [];
+    }
+    if (!parsed.targets.heightCm) {
+      parsed.targets.heightCm = 178;
+    }
+    if (!parsed.targets.ageYears) {
+      parsed.targets.ageYears = 35;
     }
     if (parsed.activeWeekDay === undefined) {
       parsed.activeWeekDay = 0;

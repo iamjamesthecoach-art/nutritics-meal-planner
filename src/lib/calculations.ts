@@ -1,10 +1,6 @@
-export const ACTIVITY_LEVELS = [
-  { label: "Sedentary", kcalPerKg: 24 },
-  { label: "Lightly active", kcalPerKg: 26 },
-  { label: "Moderately active", kcalPerKg: 28 },
-  { label: "Very active", kcalPerKg: 31 },
-  { label: "Athlete", kcalPerKg: 34 },
-] as const;
+// ── Mifflin-St Jeor Equation ──────────────────────────────────────────
+// BMR (men) = 10 × weight(kg) + 6.25 × height(cm) − 5 × age(years) + 5
+// TDEE = BMR × activity multiplier (derived from training frequency)
 
 export const GOALS = [
   { label: "Aggressive cut", adjustment: -0.25 },
@@ -13,19 +9,30 @@ export const GOALS = [
   { label: "Lean gain", adjustment: 0.1 },
 ] as const;
 
+// Activity multiplier scales linearly with training days:
+// 0 days/wk → 1.2 (sedentary), 7 days/wk → 1.9 (athlete)
+function getActivityMultiplier(trainingDaysPerWeek: number): number {
+  return 1.2 + (trainingDaysPerWeek / 7) * 0.7;
+}
+
 export const PROTEIN_G_PER_KG = 2.0;
 export const FAT_G_PER_KG = 0.5;
 export const FIBRE_G_MIN = 30;
-export const TRAINING_CARB_BOOST = 0.15; // training day gets 15% more carbs than rest day
+export const TRAINING_CARB_BOOST = 0.15;
 
 export interface Targets {
   bodyweightKg: number;
-  activityLevel: string;
+  heightCm: number;
+  ageYears: number;
   goal: string;
   trainingDaysPerWeek: number;
+  // legacy — kept for migration but no longer used in calculation
+  activityLevel?: string;
 }
 
 export interface CalculatedTargets {
+  bmr: number;
+  activityMultiplier: number;
   maintenance: number;
   targetAvg: number;
   proteinG: number;
@@ -44,13 +51,18 @@ export interface CalculatedTargets {
 }
 
 export function calculateTargets(targets: Targets): CalculatedTargets {
-  const activity = ACTIVITY_LEVELS.find((a) => a.label === targets.activityLevel);
   const goalObj = GOALS.find((g) => g.label === targets.goal);
-
-  const kcalPerKg = activity?.kcalPerKg ?? 28;
   const goalAdj = goalObj?.adjustment ?? -0.15;
 
-  const maintenance = targets.bodyweightKg * kcalPerKg;
+  // Mifflin-St Jeor (men)
+  const bmr =
+    10 * targets.bodyweightKg +
+    6.25 * (targets.heightCm || 178) -
+    5 * (targets.ageYears || 30) +
+    5;
+
+  const activityMultiplier = getActivityMultiplier(targets.trainingDaysPerWeek);
+  const maintenance = bmr * activityMultiplier;
   const targetAvg = maintenance * (1 + goalAdj);
 
   const proteinG = targets.bodyweightKg * PROTEIN_G_PER_KG;
@@ -61,17 +73,15 @@ export function calculateTargets(targets: Targets): CalculatedTargets {
   const trainingDays = targets.trainingDaysPerWeek;
   const restDays = 7 - trainingDays;
 
-  // Training day gets TRAINING_CARB_BOOST% more carbs than rest day.
-  // Solve: T = R * (1 + boost), trainingDays*T + restDays*R = 7*avgCarbsG
-  // → R = 7*avg / (trainingDays*(1+boost) + restDays)
-  // When all 7 days are training, T = avgCarbsG (no boost needed).
   let restCarbsG: number;
   let trainingCarbsG: number;
   if (restDays === 0) {
     restCarbsG = avgCarbsG;
     trainingCarbsG = avgCarbsG;
   } else {
-    restCarbsG = (7 * avgCarbsG) / (trainingDays * (1 + TRAINING_CARB_BOOST) + restDays);
+    restCarbsG =
+      (7 * avgCarbsG) /
+      (trainingDays * (1 + TRAINING_CARB_BOOST) + restDays);
     trainingCarbsG = restCarbsG * (1 + TRAINING_CARB_BOOST);
   }
 
@@ -94,6 +104,8 @@ export function calculateTargets(targets: Targets): CalculatedTargets {
   }
 
   return {
+    bmr: Math.round(bmr),
+    activityMultiplier: Math.round(activityMultiplier * 100) / 100,
     maintenance: Math.round(maintenance),
     targetAvg: Math.round(targetAvg),
     proteinG: Math.round(proteinG),

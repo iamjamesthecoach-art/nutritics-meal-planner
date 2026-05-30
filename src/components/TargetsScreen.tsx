@@ -2,7 +2,6 @@
 
 import { AppState } from "@/lib/store";
 import {
-  ACTIVITY_LEVELS,
   GOALS,
   calculateTargets,
 } from "@/lib/calculations";
@@ -42,23 +41,6 @@ export default function TargetsScreen({ state, update }: Props) {
             onChange={(e) => setField("bodyweightKg", Number(e.target.value))}
             className="w-full border border-[#3a3a5c] rounded-lg px-4 py-3 text-lg text-white bg-[#1a1a2e] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF]"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-[#c0c0d8] mb-1">
-            Activity level
-          </label>
-          <select
-            value={t.activityLevel}
-            onChange={(e) => setField("activityLevel", e.target.value)}
-            className="w-full border border-[#3a3a5c] rounded-lg px-4 py-3 text-lg text-white bg-[#1a1a2e] focus:outline-none focus:ring-2 focus:ring-[#7C4DFF]"
-          >
-            {ACTIVITY_LEVELS.map((a) => (
-              <option key={a.label} value={a.label}>
-                {a.label}
-              </option>
-            ))}
-          </select>
         </div>
 
         <div>
